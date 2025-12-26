@@ -1,7 +1,7 @@
 {
-  "name": "nocobase-migration-manager",
-  "version": "1.0.0",
-  "description": "Database Migration Manager for NocoBase",
+  "name": "bulk-migration-backend",
+  "version": "0.1.0",
+  "description": "Manage and execute PostgreSQL database migrations between environments with confidence. Configure connections, rule presets, execute, and report migrations.",
   "main": "server.js",
   "scripts": {
     "start": "node server.js",

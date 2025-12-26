@@ -5,6 +5,23 @@ Manage and execute PostgreSQL database migrations between environments with conf
 <h3>Connections, rule presets, execute, and report migrations</h3>
 <img width="100%" src="screenshots/bulk-migration-gui5.png"></a>
 
+## 📑 Table of Contents
+
+- [Features](#-features)
+- [Prerequisites](#-prerequisites)
+- [Installation - Backend](#-installation-back-end)
+- [Installation - Frontend](#-installation-front-end)
+- [Project Structure](#-project-structure)
+- [API Endpoints](#-api-endpoints)
+- [Migration Rules](#-migration-rules)
+- [Security](#-security)
+- [Troubleshooting](#-troubleshooting)
+- [Logs](#-logs)
+- [Production Deploy](#-production-deploy)
+- [Contributing](#-contributing)
+- [License](#-license)
+- [Authors](#-authors)
+
 ## 🚀 Features
 
 ### Backend (Node.js + Express)
@@ -32,7 +49,7 @@ Manage and execute PostgreSQL database migrations between environments with conf
 - ✅ Rollback support (structure ready)
 
 
-## 🔧 Installation
+## 🔧 Installation BACK-END
 
 ### 1. Clone the repository
 
@@ -243,6 +260,92 @@ COPY . .
 EXPOSE 3001
 CMD ["node", "server.js"]
 ```
+
+## 🔧 Installation FRONT-END
+
+## File Structure
+
+```
+migration-manager-frontend/
+├── public/
+│   └── favicon.ico
+├── src/
+│   ├── components/
+│   │   ├── layout/
+│   │   │   ├── Navigation.tsx      
+│   │   │   └── index.ts
+│   │   └── views/
+│   │       ├── DashboardView.tsx   
+│   │       ├── ConnectionsView.tsx 
+│   │       ├── MigrationsView.tsx  
+│   │       ├── ReportsView.tsx     
+│   │       └── index.ts
+│   ├── services/
+│   │   └── api.ts                  
+│   ├── types/
+│   │   └── index.ts                
+│   ├── App.tsx                     
+│   ├── index.tsx                   
+│   ├── index.css
+│   └── vite-env.d.ts
+├── .env
+├── index.html
+├── package.json
+├── tailwind.config.js
+├── tsconfig.json
+└── vite.config.ts
+```
+
+---
+
+## 🚀 Quick Setup
+
+### 1. Clone the repository
+
+```bash
+git clone git@github.com:leandro-jm/bulk-migration.git
+cd bulk-migration
+```
+
+### 2. Install dependencies
+
+```bash
+npm install lucide-react
+npm install -D tailwindcss postcss autoprefixer @types/node
+npx tailwindcss init -p
+```
+
+### 3. Configure environment variables
+
+**.env:**
+```env
+VITE_API_URL=http://localhost:3001/api
+```
+
+### 4. Run
+
+```bash
+npm run dev
+```
+
+## 🔧 Useful Commands
+
+```bash
+# Development
+npm run dev
+
+# Build
+npm run build
+
+# Type check
+npx tsc --noEmit
+
+# Lint
+npm run lint
+```
+
+---
+
 
 ## 🤝 Contributing
 
