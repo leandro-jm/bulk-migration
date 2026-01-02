@@ -9,6 +9,7 @@ Manage and execute PostgreSQL database migrations between environments with conf
 
 - [Features](#-features)
 - [Prerequisites](#-prerequisites)
+- [Quick Start with Docker](#-quick-start-with-docker)
 - [Installation - Backend](#-installation-back-end)
 - [Installation - Frontend](#-installation-front-end)
 - [Project Structure](#-project-structure)
@@ -41,12 +42,99 @@ Manage and execute PostgreSQL database migrations between environments with conf
 
 ## 📋 Prerequisites
 
-- Node.js 18+ 
+### For Docker (Recommended)
+- Docker 20+
+- Docker Compose 2+
+
+### For Manual Installation
+- Node.js 18+ (Backend) / Node.js 20+ (Frontend)
 - PostgreSQL 12+
 - npm or yarn
 
 ### TODO
 - ✅ Rollback support (structure ready)
+
+## 🐳 Quick Start with Docker
+
+The easiest way to run the entire application is using Docker Compose.
+
+### 1. Clone the repository
+
+```bash
+git clone git@github.com:leandro-jm/bulk-migration.git
+cd bulk-migration
+```
+
+### 2. Start all services
+
+```bash
+docker compose up -d
+```
+
+This will start:
+- **Backend**: http://localhost:3001
+- **Frontend**: http://localhost:3000
+- **PostgreSQL Database**: localhost:5432
+
+### 3. View logs
+
+```bash
+# All services
+docker compose logs -f
+
+# Specific service
+docker compose logs -f backend
+docker compose logs -f frontend
+docker compose logs -f db
+```
+
+### 4. Stop services
+
+```bash
+# Stop containers (keeps data)
+docker compose stop
+
+# Stop and remove containers (keeps data)
+docker compose down
+
+# Stop, remove containers and volumes (removes all data)
+docker compose down -v
+```
+
+### Docker Services Configuration
+
+The `docker-compose.yml` includes:
+
+**Backend Service:**
+- Port: 3001
+- Auto-connects to PostgreSQL
+- Environment variables pre-configured
+- Hot-reload enabled (development mode)
+
+**Frontend Service:**
+- Port: 3000
+- Built with Vite + React
+- Hot-reload enabled
+- Pre-configured to connect to backend
+
+**Database Service:**
+- PostgreSQL 16 Alpine
+- Port: 5432
+- User: `nocobase`
+- Password: `nocobase`
+- Database: `bulk_migration`
+- Data persisted in Docker volume
+
+### Rebuilding after code changes
+
+```bash
+# Rebuild specific service
+docker compose up -d --build backend
+docker compose up -d --build frontend
+
+# Rebuild all services
+docker compose up -d --build
+```
 
 
 ## 🔧 Installation BACK-END
