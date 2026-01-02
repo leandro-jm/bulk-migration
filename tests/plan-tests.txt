@@ -1,0 +1,251 @@
+🧪 Cenários de Teste: DEV → HML
+
+1. Cenários Básicos de Estrutura
+Cenário 1.1: Nova Tabela Criada em DEV
+Situação: Desenvolvedor criou nova collection "clientes" em DEV
+Objetivo: Migrar apenas estrutura (schema only) para HML
+Teste:
+- Criar tabela "anotacoes" em DEV com campos
+- Executar migração com regra "Schema Only"
+- Verificar se estrutura foi criada em HML sem dados
+
+Status: OK
+
+Cenário 1.2: Novos Campos em Tabela Existente
+Situação: Adicionados campos "cpf" e "data_nascimento" na tabela "users"
+Objetivo: Atualizar estrutura em HML
+Teste:
+- Adicionar campos em DEV na tabela Anotacao
+- Executar migração "Schema Only"
+- Verificar se campos existem em HML
+- Verificar se dados antigos não foram afetados
+
+Status: OK
+
+2. Cenários de Dados Novos
+Cenário 2.1: Dados de Configuração Inicial
+Situação: Cadastrados tipos de documentos, categorias, status padrões
+Objetivo: Popular HML com dados mestres
+Teste:
+- Dados como peças 
+
+Status: OK
+
+Cenário 2.2: Dados de Teste para QA
+Situação: Time QA precisa de massa de dados para testes
+Objetivo: Copiar dados de teste de DEV para HML
+Teste:
+- Criar ORderm de triagem fictícios em DEV
+- Executar migração com regra "Overwrite"
+- Verificar quantidade e integridade dos dados
+
+Status: OK
+
+3. Cenários de Atualização de Dados
+Cenário 3.1: Atualização de Preços de Produtos
+Situação: Preços de produtos atualizados em DEV
+Objetivo: Sincronizar preços em HML sem perder outros dados
+Teste:
+- Atualizei campo status Laudo
+
+Status: OK
+
+Cenário 3.2: Correção de Dados Inconsistentes
+Situação: Correção de emails duplicados em DEV
+Objetivo: Aplicar correções em HML
+Teste:
+- 
+
+Status: Não executado
+
+4. Cenários de Merge de Dados
+Cenário 4.1: Preservar Dados Criados em HML
+Situação: HML tem dados de testes do QA que não devem ser perdidos
+Objetivo: Adicionar dados de DEV sem sobrescrever HML
+Teste:
+- HML criados clientes e ordem de triagem
+- Executar migração com regra "Insert Ignore"
+- Verificar se HML se não foram apagados.
+
+Status: OK
+
+Cenário 4.2: Sincronização Parcial
+Situação: Migrar apenas novas collections, preservar existentes
+Objetivo: Adicionar dados sem afetar tabelas já em uso
+Teste:
+- HML criados clientes e ordem de triagem
+- Executar migração com regra "Insert Ignore"
+- Verificar se HML se não foram apagados.
+
+Status: OK
+
+5. Cenários de Relacionamentos
+Cenário 5.1: Tabelas com Foreign Keys
+Situação: Migrar "anotacoes" que referenciam "usuario"
+Objetivo: Manter integridade referencial
+Teste:
+- Adicionar campo usuario em anotacoes
+- Depois migrar "anotacoes" com regra "Schema"
+- Verificar se todas as FKs estão válidas
+- Verificar se não há registros órfãos
+
+Status: OK
+
+Cenário 5.2: Dados com Relacionamentos Many-to-Many
+Situação: Tabela "users_roles" conecta users e roles
+Objetivo: Migrar relacionamentos corretamente
+Teste:
+- Migrar "users", "roles" e "users_roles" em sequência
+- Verificar se todos os relacionamentos foram preservados
+- Testar login com usuários migrados
+
+Status: Não executado
+
+6. Cenários de Volume de Dados
+Cenário 6.1: Migração de Tabela Grande
+Situação: Tabela "equipamento" tem 2.000 registros
+Objetivo: Testar performance e processamento em lotes
+Teste:
+- Executar migração de tabela com 50k+ registros
+- Monitorar tempo de execução
+- Verificar se todos os registros foram migrados
+- Verificar logs de erro
+
+Status: OK
+
+Cenário 6.2: Migração de Múltiplas Tabelas
+Situação: Migrar 110 collections de uma vez
+Objetivo: Testar execução em paralelo
+Teste:
+- Selecionar todas as 110 collections
+- Executar migração com rule preserts 
+- Verificar relatório de cada collection
+- Identificar gargalos de performance
+
+Status: OK
+
+7. Cenários de Tratamento de Erros
+Cenário 7.1: Conflito de Primary Key
+Situação: Registros com mesmo ID existem em DEV e HML
+Objetivo: Testar regra "Insert Ignore"
+Teste:
+- Criar usuário com ID=1 em DEV
+- Criar usuário com ID=1 em HML (dados diferentes)
+- Executar migração com "Insert Ignore"
+- Verificar se HML manteve seu registro original
+- Verificar log de conflitos
+
+Status:
+
+Cenário 7.2: Violação de Constraint
+Situação: Campo NOT NULL sem valor
+Objetivo: Testar rollback automático
+Teste:
+- Criar registro em DEV com campo obrigatório NULL
+- Tentar migrar para HML
+- Verificar se migração falhou
+- Verificar se rollback foi executado
+- Verificar se HML não foi corrompido
+
+8. Cenários de Dados Sensíveis
+Cenário 8.1: Anonimização de Dados
+Situação: Migrar estrutura e dados, mas anonimizar emails
+Objetivo: Proteger dados sensíveis em HML
+Teste:
+- Migrar users com emails reais em DEV
+- Aplicar regra customizada para anonimizar
+- Verificar se emails foram alterados para "user{id}@test.com"
+- Verificar se outros dados foram preservados
+
+Cenário 8.2: Exclusão de Campos Sensíveis
+Situação: Não migrar campo "password_hash"
+Objetivo: Migração parcial de campos
+Teste:
+- Configurar migração para excluir campo "password_hash"
+- Executar migração
+- Verificar se campo não foi copiado
+
+9. Cenários de Rollback
+Cenário 9.1: Rollback Total
+Situação: Migração executada com erro
+Objetivo: Reverter todas as alterações
+Teste:
+- Fazer backup do estado atual de HML
+- Executar migração que falha no meio
+- Executar rollback
+- Verificar se HML voltou ao estado original
+
+Cenário 9.2: Rollback Parcial
+Situação: 3 de 5 collections migraram com sucesso
+Objetivo: Reverter apenas as que falharam
+Teste:
+- Executar migração de 5 collections
+- Simular erro na 4ª collection
+- Executar rollback seletivo
+- Verificar estado de cada collection
+
+10. Cenários Complexos End-to-End
+Cenário 10.1: Deploy Completo de Feature
+Description: "Deploy da feature de gestão de contratos - Sprint 45"
+
+Situação: Nova feature desenvolvida em DEV com múltiplas tabelas
+
+Teste Completo:
+1. Migrar estruturas (Schema Only):
+   - contracts
+   - contract_items
+   - contract_attachments
+   - contract_history
+   
+2. Migrar dados mestres (Overwrite):
+   - contract_types
+   - contract_status
+   
+3. Migrar dados de teste (Insert Ignore):
+   - 10 contratos de exemplo
+   - 50 itens relacionados
+   
+4. Verificações:
+   - Todas as tabelas criadas
+   - Relacionamentos funcionando
+   - Dados de teste disponíveis
+   - Nenhum erro nos logs
+
+Cenário 10.2: Sincronização Incremental
+Description: "Sincronização semanal de dados mestres - Semana 12/2025"
+
+Situação: Atualização semanal de dados mestres
+
+Teste Completo:
+1. Identificar mudanças em DEV desde última migração
+2. Migrar apenas registros novos/alterados com Upsert:
+   - products (150 novos, 50 atualizados)
+   - categories (5 novas)
+   - suppliers (20 novos)
+   
+3. Verificações:
+   - Registros novos adicionados
+   - Registros existentes atualizados
+   - Nenhum registro deletado por engano
+   - Integridade mantida
+
+📋 Checklist de Testes Recomendado
+markdown### Antes da Migração
+- [ ] Backup de HML realizado
+- [ ] Conexões testadas (DEV e HML)
+- [ ] Descrição da migração documentada
+- [ ] Regras de migração definidas por collection
+
+### Durante a Migração
+- [ ] Logs sendo gerados corretamente
+- [ ] Progress bar funcionando
+- [ ] Sem erros de conexão
+- [ ] Performance aceitável
+
+### Após a Migração
+- [ ] Relatório gerado com sucesso
+- [ ] Contagem de registros conferida
+- [ ] Relacionamentos validados
+- [ ] Queries de teste executadas
+- [ ] Performance da aplicação normal
+- [ ] Logs sem erros críticos
