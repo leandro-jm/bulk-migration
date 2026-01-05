@@ -136,6 +136,102 @@ docker compose up -d --build frontend
 docker compose up -d --build
 ```
 
+### Publishing to Docker Hub
+
+If you want to publish your images to Docker Hub with **multi-platform support** (amd64 + arm64):
+
+**Why multi-platform?**
+- ✅ Works on Intel/AMD processors (amd64) - most cloud servers
+- ✅ Works on Apple Silicon M1/M2/M3 (arm64) - Mac development
+- ✅ Works on ARM servers (arm64) - AWS Graviton, Oracle Cloud, etc.
+- ✅ Single image tag works on all platforms automatically
+
+#### Quick method (Recommended)
+
+Use the automated script that builds for both amd64 and arm64:
+
+```bash
+# Publish as 'latest' (multi-platform)
+./publish-docker.sh
+
+# Publish with specific version tag (multi-platform)
+./publish-docker.sh v1.0.0
+```
+
+The script will:
+1. Check Docker Hub login and Docker Buildx availability
+2. Create/use a multi-platform builder
+3. Build images for **linux/amd64** and **linux/arm64**
+4. Tag images (latest + version if specified)
+5. Push all images to Docker Hub
+
+**Verify multi-platform support:**
+```bash
+docker buildx imagetools inspect leandrojm/bulk-migration-backend:latest
+docker buildx imagetools inspect leandrojm/bulk-migration-frontend:latest
+```
+
+#### Manual method (Multi-platform)
+
+If you prefer to do it manually with multi-platform support:
+
+**1. Login to Docker Hub**
+
+```bash
+docker login
+```
+
+**2. Create a buildx builder**
+
+```bash
+# Create a new builder instance
+docker buildx create --name multiplatform --use
+
+# Bootstrap the builder
+docker buildx inspect --bootstrap
+```
+
+**3. Build and push for multiple platforms**
+
+```bash
+# Backend - build for amd64 and arm64
+docker buildx build \
+  --platform linux/amd64,linux/arm64 \
+  --tag leandrojm/bulk-migration-backend:latest \
+  --tag leandrojm/bulk-migration-backend:v1.0.0 \
+  --push \
+  ./bulk-migration-backend
+
+# Frontend - build for amd64 and arm64
+docker buildx build \
+  --platform linux/amd64,linux/arm64 \
+  --tag leandrojm/bulk-migration-frontend:latest \
+  --tag leandrojm/bulk-migration-frontend:v1.0.0 \
+  --push \
+  ./bulk-migration-frontend
+```
+
+**Note:** The `--push` flag is required when building for multiple platforms.
+
+### Using published images from Docker Hub
+
+To use the published images without building locally, use the production compose file:
+
+```bash
+# Pull and start services using pre-built images
+docker compose -f docker-compose.prod.yml up -d
+
+# View logs
+docker compose -f docker-compose.prod.yml logs -f
+
+# Stop services
+docker compose -f docker-compose.prod.yml down
+```
+
+This will pull the images directly from Docker Hub:
+- `leandrojm/bulk-migration-backend:latest`
+- `leandrojm/bulk-migration-frontend:latest`
+
 
 ## 🔧 Installation BACK-END
 

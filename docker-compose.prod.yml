@@ -1,70 +1,51 @@
 services:
   backend:
     image: leandrojm/bulk-migration-backend:v0.1.0
-    build:
-      context: ./bulk-migration-backend
-      dockerfile: Dockerfile
     container_name: app-bulk-migration-backend
     ports:
-      - "3001:3001"  
+      - "3003:3001"  
     environment:
-      - NODE_ENV=development
-      - PORT=3001
+      - NODE_ENV=development  
+      - PORT=3001  
       - LOG_LEVEL=debug
       - APP_DB_HOST=db
       - APP_DB_PORT=5432
       - APP_DB_NAME=bulk_migration
-      - APP_DB_USER=nocobase
-      - APP_DB_PASSWORD=nocobase
-    volumes:
-      - ./bulk-migration-backend:/app
-      - /app/node_modules
+      - APP_DB_USER=user
+      - APP_DB_PASSWORD=pass
     depends_on:
       db:
         condition: service_healthy
-    networks:
-      - app-network
+
 
   frontend:
-    image: leandrojm/bulk-migration-frontend:latest
-    build:
-      context: ./bulk-migration-frontend
-      dockerfile: Dockerfile
+    image: leandrojm/bulk-migration-frontend:v0.1.0
     container_name: app-bulk-migration-frontend
     ports:
-      - "3000:3000"
+      - "3004:3000"
     environment:
-      - VITE_API_URL=http://localhost:3001/api
-    volumes:
-      - ./bulk-migration-frontend:/app
-      - /app/node_modules
+      - VITE_API_URL=https://<your-domain>/api
     depends_on:
       - backend
-    networks:
-      - app-network
+
 
   db:
     image: postgres:16-alpine
     container_name: app-bulk-migration-database
     environment:
-      - POSTGRES_USER=nocobase
-      - POSTGRES_PASSWORD=nocobase
+      - POSTGRES_USER=user
+      - POSTGRES_PASSWORD=pass
       - POSTGRES_DB=bulk_migration
     ports:
-      - "5432:5432"
+      - "5440:5432" 
     volumes:
       - postgres-data:/var/lib/postgresql/data
-    networks:
-      - app-network
+
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U nocobase -d bulk_migration"]
       interval: 5s
       timeout: 5s
       retries: 5
-
-networks:
-  app-network:
-    driver: bridge
 
 volumes:
   postgres-data:
